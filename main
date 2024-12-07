@@ -1,0 +1,133 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+void choice(char &player){
+    if(player=='x') player='X';
+    else player='O';
+}
+void display(char *space){
+    cout << " " << space[0] << " | " << space[1] << " | " << space[2] << endl;
+    cout << "---|---|---" << endl;
+    cout << " " << space[3] << " | " << space[4] << " | " << space[5] << endl;
+    cout << "---|---|---" << endl;
+    cout << " " << space[6] << " | " << space[7] << " | " << space[8] << endl;
+}
+void movePlayer(char *space,char player){
+    int number;
+    while(true){
+        cout<<"Enter the position (1-9) : ";
+        cin>>number;
+        if (cin.fail()) {
+            cin.clear();  
+            cin.ignore(10000, '\n');  
+            cout << "Invalid input." << endl;
+            continue;
+        }
+
+        if (number < 1 || number > 9) {
+            cout << "Invalid position."<<endl;
+            continue;
+        }
+        if(space[number-1]==' '){
+            space[number-1]=player;
+            break;
+        }
+        else cout<<"Already filled"<<endl;
+    };
+}
+void moveComputer(char *space,char player){
+    char comp;
+    if(player=='X') comp='O';
+    else comp='X';
+    srand(time(0));
+    int randNum;
+    do{
+         randNum = rand() % 9 + 1;
+         if(space[randNum-1]==' '){
+             space[randNum-1]=comp;
+             break;
+         }
+    }while(true);
+    
+
+}
+int result(char *space,char player){
+    for (int i = 0; i < 9; i += 3) {
+        if (space[i] == space[i + 1] && space[i + 1] == space[i + 2] && space[i] != ' ') {
+            return (space[i] == player) ? 1 : 2;
+        }
+    }
+    for (int i = 0; i < 3; ++i) {
+        if (space[i] == space[i + 3] && space[i + 3] == space[i + 6] && space[i] != ' ') {
+           return (space[i] == player) ? 1 : 2;
+        }
+    }
+    if ( space[0] == space[4] && space[4] == space[8] && space[0] != ' ') {
+        return (space[0] == player) ? 1 : 2;
+    }
+    if (space[2] == space[4] && space[4] == space[6] && space[2] != ' ') {
+        return (space[2] == player) ? 1 : 2;
+    }
+    for (int i = 0; i < 9; i++) {
+        if (space[i] == ' ') return 0; 
+    }
+    
+    return 3;
+}
+int main()
+{
+    char board[]={' ',' ',' ',' ',' ',' ',' ',' ',' '};
+    char player;
+    string name;
+    cout<<"Enter your name : ";
+    cin>>name;
+    char computer;
+    bool playing=true;
+    do {
+        cout << "\nChoose X or O : ";
+        cin >> player;
+        player = tolower(player);
+        if (player == 'x' || player == 'o') {
+            choice(player);
+            break;
+        } else {
+            cout << "Invalid choice. Please choose X or O." << endl;
+        }
+    } while (true);
+    if(player=='X') computer='O';
+    else computer='X';
+    display(board);
+    cout<<"\n";
+    while(playing){
+        moveComputer(board,player);
+        display(board);
+        int res = result(board, player);
+        if (res == 1) {
+            cout << name << " wins!" << endl;
+            break;
+        } else if (res == 2) {
+            cout << "Computer wins!" << endl;
+            break;
+        } else if (res == 3) {
+            cout << "It's a tie!" << endl;
+            break;
+        }
+
+        movePlayer(board,player);
+        display(board);
+        cout<<endl;
+        res = result(board, player);
+        if (res == 1) {
+            cout << name << " wins!" << endl;
+            break;
+        } else if (res == 2) {
+            cout << "Computer wins!" << endl;
+            break;
+        } else if (res == 3) {
+            cout << "It's a tie!" << endl;
+            break;
+        }
+        else continue;
+
+    }
+}
